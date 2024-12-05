@@ -1,12 +1,35 @@
 <h1>Department Page</h1>
-
+<input type="text" name="tb_deptName" id= "tb_deptName" placeholder="Department Name ..." required><a href="javascript:void(0)" onclick="createDepartment(document.getElementById('tb_deptName').value)">Save Department</a>
 <table >
-<thead> <tr> <th>ID</th> <th>Name</th> <th>Edit</th> <th>Delete</th></tr> </thead> 
+<thead> <tr> <th>ID</th> <th>Name</th>  <th>Delete</th></tr> </thead> 
 
 <tbody id="tbl_department"> </tbody>
 
 </table>
 <script>
+function createDepartment(deptName){
+  var url="../api/departments";
+  var xhr=new XMLHttpRequest();
+  
+xhr.open("POST",url,true);
+xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+const payload={
+"name": deptName
+};
+xhr.onreadystatechange = function() {
+if (xhr.readyState === XMLHttpRequest.DONE) {
+      if (xhr.status === 200) { 
+          alert("Department Created");
+          fetchDataAndPopulateTbl();
+      }else{
+         alert(xhr.responseText);
+      }
+}
+};
+xhr.send(JSON.stringify( payload));
+}
+
 
 function deleteDepartment(deptId){
   var url="../api/departments/"+deptId;
