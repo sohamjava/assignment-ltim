@@ -32,7 +32,7 @@ public class SecurityConfig {
 			authorize.requestMatchers("api/v1/**").permitAll();
 
 			authorize.anyRequest().authenticated();
-		}).httpBasic(Customizer.withDefaults());
+		}).formLogin(Customizer.withDefaults()).sessionManagement(Customizer.withDefaults());
 		return http.build();
 	}
 }
