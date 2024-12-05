@@ -17,4 +17,9 @@ public class MvcUIController {
 	public ModelAndView departmentPage() {
 		return new ModelAndView("department");
 	}
+	
+	@GetMapping("employees")
+	public ModelAndView employeePage() {
+		return new ModelAndView("employee");
+	}
 }
