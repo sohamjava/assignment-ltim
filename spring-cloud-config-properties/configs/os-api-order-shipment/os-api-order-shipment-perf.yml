@@ -1,0 +1,7 @@
+app:
+  shipment:
+    routing:
+      uri: ordersourcing-perf.staoples.com
+      size: 10000
+      
+    pltDelay: 2
