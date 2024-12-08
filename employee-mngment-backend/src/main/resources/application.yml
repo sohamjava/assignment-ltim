@@ -1,6 +1,18 @@
+server:
+  port: 9090
 spring:
   application:
     name: employee-mngment-backend
+  profiles:
+    active:
+    - dev
+  config:
+    import:
+    - optional:configserver:http://localhost:8888
+  cloud:
+    config:
+      username: admin
+      password: oracle
   data:
     rest:
       base-path: /data
@@ -18,4 +30,5 @@ spring:
   mvc:
     view:
       prefix: /WEB-INF/jsp/
-      suffix: .jsp  
+      suffix: .jsp
+eureka.client.service-url.defaultZone: http://localhost:8761/eureka/        

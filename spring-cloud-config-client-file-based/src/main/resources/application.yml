@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: os-api-order-shipment
+    
+  profiles:
+    active:
+    - dev
+  config:
+    import:
+    - optional:configserver:http://localhost:8888
+  cloud:
+    config:
+      username: admin
+      password: oracle
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+              
+spring.jackson.serialization.FAIL_ON_EMPTY_BEANS: false
+

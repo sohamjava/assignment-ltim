@@ -1,0 +1,27 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: spring-cloud-config-server-file-based
+  profiles:
+    active:
+    - native
+    
+  cloud:
+    config:
+#      profile: native
+      server:
+        encrypt:
+          enabled: true
+           
+        native:
+          search-locations:
+          - file:///D:/m1
+          - file:///D:/m1/os-api-order-shipment
+          
+  security:
+    user:
+      name: admin
+      password: oracle        
+#spring.cloud.bootstrap.enabled: true
+spring.cloud.config.server.encrypt.enabled: false
