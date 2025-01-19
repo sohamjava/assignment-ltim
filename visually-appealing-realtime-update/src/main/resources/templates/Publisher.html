@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Media Operator For XYZ Television Cricket Match IND vs ENG</title>
+	<style>
+		body {
+			margin: 0;
+			height: 100%;
+			width: 100%;
+		}
+
+		canvas {
+			display: block;
+		}
+
+		.container {
+			display: flex;
+			height: 100vh;
+			width: 100%;
+		}
+
+		.left-section {
+
+			background-color: lightblue;
+			width: 80%;
+			padding: 20px;
+			box-sizing: border-box;
+
+		}
+
+		.right-section {
+			width: 20%;
+			background-color: lightcoral;
+			padding: 20px;
+			box-sizing: border-box;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="left-section">
+			<canvas id="cricketField"></canvas>
+		</div>
+		<div class="right-section">
+			<textarea rows="10" cols="50" id="tb_Comment" placeholder="Message here"></textarea>
+			<button onclick="sendTextMsg()">Send</button>
+			<fieldset>
+				<legend>Quick Panel</legend>
+				<button onclick="sendToastMsg('boundary')">4️⃣🏏</button>
+				<button onclick="sendToastMsg('over-boundary')">6️⃣🏏</button>
+				<button onclick="sendToastMsg('out')">❌?</button>
+				<button onclick="sendToastMsg('100')">'🏏💯</button>
+			</fieldset>
+
+		</div>
+	</div>
+	<script>
+		let socket;
+		let dto;
+		window.onload = function () {
+			socket = new WebSocket("ws://"+window.location.host+"/score");
+			socket.onmessage = function (event) {
+				console.log(event);
+			};
+
+		};
+
+
+		const canvas = document.getElementById('cricketField');
+		const ctx = canvas.getContext('2d');
+
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+
+		function drawCricketField() {
+			ctx.fillStyle = 'green';
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+			const centerX = canvas.width / 2;
+			const centerY = canvas.height / 2;
+			const fieldWidth = 600;
+			const fieldHeight = 400;
+
+			// Draw the oval cricket field
+			ctx.fillStyle = 'lightgreen';
+			ctx.beginPath();
+			ctx.ellipse(centerX, centerY, fieldWidth / 2, fieldHeight / 2, 0, 0, Math.PI * 2);
+			ctx.fill();
+
+			// Draw pitch and creases
+			ctx.fillStyle = 'white';
+			ctx.fillRect(centerX - 3, centerY - 150, 6, 300); // Pitch
+			ctx.fillRect(centerX - 150, centerY - 3, 300, 6); // Crease
+
+			// Draw stumps
+			ctx.fillRect(centerX - 6, centerY - 160, 4, 20);
+			ctx.fillRect(centerX - 2, centerY - 160, 4, 20);
+			ctx.fillRect(centerX + 2, centerY - 160, 4, 20);
+
+			ctx.fillRect(centerX - 6, centerY + 140, 4, 20);
+			ctx.fillRect(centerX - 2, centerY + 140, 4, 20);
+			ctx.fillRect(centerX + 2, centerY + 140, 4, 20);
+		}
+
+		let drawing = false;
+		let startX = 0;
+		let startY = 0;
+		let currentX = 0;
+		let currentY = 0;
+
+		canvas.addEventListener('mousedown', (e) => {
+			const rect = canvas.getBoundingClientRect();
+			const mouseX = e.clientX - rect.left;
+			const mouseY = e.clientY - rect.top;
+			// console.log(mouseX+" " +mouseY+ctx.isPointInPath(mouseX, mouseY));
+			//  if (ctx.isPointInPath(mouseX, mouseY)) {
+			drawing = true;
+			startX = mouseX;
+			startY = mouseY;
+			currentX = mouseX;
+			currentY = mouseY;
+			// }
+		});
+
+		canvas.addEventListener('mousemove', (e) => {
+			if (drawing) {
+				const rect = canvas.getBoundingClientRect();
+				const mouseX = e.clientX - rect.left;
+				const mouseY = e.clientY - rect.top;
+				currentX = mouseX;
+				currentY = mouseY;
+				clearCanvas();
+				drawLine(startX, startY, currentX, currentY);
+			}
+		});
+
+		canvas.addEventListener('mouseup', () => {
+			drawing = false;
+		});
+
+		canvas.addEventListener('mouseout', () => {
+			drawing = false;
+		});
+
+		function clearCanvas() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			drawCricketField();
+		}
+
+		function drawLine(startX, startY, endX, endY) {
+			ctx.beginPath();
+			ctx.moveTo(startX, startY);
+			ctx.lineTo(endX, endY);
+			ctx.strokeStyle = 'red';
+			ctx.lineWidth = 5;  // Increase the line width for better visibility
+			ctx.stroke();
+			ctx.closePath();
+			dto = {};
+
+
+			dto.startX = startX;
+			dto.startY = startY;
+			dto.endX = endX;
+			dto.endY = endY;
+			sendMessage("VISUAL", dto);
+		}
+
+		function sendMessage(strType, dto) {
+
+			dto.id = Date.now();
+			dto.type = strType;
+			socket.send(JSON.stringify(dto));
+		}
+		function sendTextMsg() {
+			dto = {};
+			dto.message = document.getElementById("tb_Comment").value;
+
+			sendMessage("TEXT", dto);
+		}
+		function sendToastMsg(msg) {
+			dto = {};
+			dto.message = msg;
+
+			sendMessage("TOAST", dto);
+		}
+		drawCricketField();
+	</script>
+</body>
+
+</html>
