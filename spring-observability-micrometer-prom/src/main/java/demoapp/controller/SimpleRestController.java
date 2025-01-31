@@ -26,7 +26,7 @@ public class SimpleRestController {
 
 	@GetMapping("/chk")
 	public String someEndPoint(@RequestParam("x") int x) {
-		
+		log.info("Received : {}",x);
 		meterRegistry.gauge("my_input_num",ai,AtomicInteger::get).set(x);
 		aCounter(x).increment();
 		return service.doSomething(x);
