@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: spring-observability-micrometer-prom
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+        
+  observations:
+    annotations:
+      enabled: true     
+  endpoint:
+    health:
+      show-details: always
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        
+      
+      
+      
+      
