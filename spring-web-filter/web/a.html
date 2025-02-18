@@ -1,0 +1,21 @@
+<h1>An Ajax Tester</h1>
+
+<script>
+	// Creating a new XMLHttpRequest object
+	var xhttp = new XMLHttpRequest();
+	
+	// Defining the function to be executed when the response is received
+	xhttp.onreadystatechange = function() {
+	    if (this.readyState == 4 && this.status == 200) {
+	        // Action to be performed when the document is ready
+	        console.log(this.responseText);
+	    }
+	};
+	
+	// Initializing the request
+	xhttp.open("GET", "	http://localhost:8080/app/a", true);
+	
+	// Sending the request
+	xhttp.send();
+
+</script>
