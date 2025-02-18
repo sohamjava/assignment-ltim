@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" name="Project name">
+	<Properties>
+		<Property name="log-path">logstash/pipeline/logs</Property>
+		<Property name="logfile-name">elk-logging-simple</Property>
+		<Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
+		<Property name="LOG_LEVEL_PATTERN">[%d %5p elk-app,%X{traceId},%X{spanId}]</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			  <PatternLayout
+				pattern="${LOG_LEVEL_PATTERN} ::  %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}" />
+			
+		</Console>
+		<RollingFile name="RollingFile"
+			filePattern="${log-path}/${logfile-name}-%d{yyyy-MM-dd}.log">
+			<PatternLayout
+				pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN} ${sys:PID} --- [%15.15t] %c : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+			<DirectWriteRolloverStrategy />
+		</RollingFile>
+		<!--<Socket name="Logstash" host="localhost" port="5044">
+			<SerializedLayout />
+		</Socket>-->
+		<!--        <Async name="Async">-->
+		<!--            <AppenderRef ref="RollingFile"/>-->
+		<!--        </Async>-->
+	</Appenders>
+
+	<Loggers>
+		<!--Root level logger to control overall logging-->
+		<Root level="INFO">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="RollingFile" level="INFO" />
+			<!--<AppenderRef ref="Logstash" level="INFO" />-->
+		</Root>
+		<!--Logger for org.springframework.boot package-->
+		<Logger name="org.springframework" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+<!--			<AppenderRef ref="RollingFile" level="DEBUG" />
+-->		</Logger>
+
+	</Loggers>
+</Configuration>
